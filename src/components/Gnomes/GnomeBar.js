@@ -7,6 +7,19 @@ import InputBase from '@material-ui/core/InputBase';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SearchIcon from '@material-ui/icons/Search';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import Slide from '@material-ui/core/Slide';
+
+const HideOnScroll = (props) => {
+    const { children } = props;
+    const trigger = useScrollTrigger();
+
+    return (
+        <Slide appear={false} direction="down" in={!trigger}>
+            {children}
+        </Slide>
+    );
+}
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -62,36 +75,38 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function GnomeBar() {
+export default function GnomeBar(props) {
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        Gnomes
+            <HideOnScroll {...props}>
+                <AppBar>
+                    <Toolbar>
+                        <Typography className={classes.title} variant="h6" noWrap>
+                            Gnomes
                     </Typography>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search…"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'Search' }}
+                            />
                         </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'Search' }}
-                        />
-                    </div>
-                    <div className={classes.filter}>
-                        <IconButton aria-label="Show 17 new notifications" color="inherit">
-                            <FilterListIcon />
-                        </IconButton>
-                    </div>
-                </Toolbar>
-            </AppBar>
+                        <div className={classes.filter}>
+                            <IconButton aria-label="Filter" color="inherit">
+                                <FilterListIcon />
+                            </IconButton>
+                        </div>
+                    </Toolbar>
+                </AppBar>
+            </HideOnScroll>
         </div>
     );
 }

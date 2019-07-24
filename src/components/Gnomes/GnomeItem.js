@@ -3,19 +3,30 @@ import Avatar from '@material-ui/core/Avatar';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import ImageIcon from '@material-ui/icons/Image';
 
-const GnomeItem = ({ key, index, style, getItemByIndex}) => {
+const GnomeItem = ({ index, style, getItem, showDetail }) => {
+
+    const item = getItem(index);
+
     return (
-        <ListItem button style={style} key={index}>
+        <ListItem 
+            divider
+            button
+            style={style} 
+            key={index}
+            onClick={() => showDetail(item)}
+        >
             <ListItemAvatar>
-                <Avatar> 
-                    <ImageIcon />
-                </Avatar>
+                <Avatar 
+                    alt={item.name}
+                    src={item.thumbnail} 
+                />
             </ListItemAvatar>
-            <ListItemText primary={getItemByIndex(index)} secondary="Jan 9, 2014" />
+            <ListItemText 
+                primary={item.name}
+                secondary={item.id}
+            />
         </ListItem>
-        
     );
 }
 

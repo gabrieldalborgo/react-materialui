@@ -2,17 +2,9 @@ import React from 'react';
 import GnomeItem from './GnomeItem';
 import { WindowScroller, AutoSizer, List } from 'react-virtualized';
 
-const list = [];
+const GnomeList = (props) => {
 
-const getItemByIndex = (index) => {
-    return list[index];
-}
-
-const GnomeList = () => {
-
-    for (var i = 0; i < 10000; i++) {
-        list.push("item " + i);
-    }
+    const { data, getItem, showDetail } = props;
 
     return (
         <WindowScroller>
@@ -22,9 +14,9 @@ const GnomeList = () => {
                         <List
                             autoHeight
                             height={height}
-                            rowCount={list.length}
+                            rowCount={data.length}
                             rowHeight={80}
-                            rowRenderer={({ key, index, style }) => GnomeItem({key, index, style, getItemByIndex})}
+                            rowRenderer={({ index, style }) => GnomeItem({ index, style, getItem, showDetail})}
                             scrollTop={scrollTop}
                             width={width}
                         />

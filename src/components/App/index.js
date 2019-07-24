@@ -2,9 +2,7 @@ import React from 'react';
 import Gnomes from '../Gnomes';
 
 const App = () => (
-    <>
-        <Gnomes></Gnomes>
-    </> 
+    <Gnomes></Gnomes>
 );
 
 export default App;
