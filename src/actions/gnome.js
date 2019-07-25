@@ -1,39 +1,16 @@
+import axios from 'axios';
+
 export const OPEN_DIALOG = '[GNOMES]OPEN_DIALOG';
 export const CLOSE_DIALOG = '[GNOMES]CLOSE_DIALOG';
 export const SET_ITEM_DIALOG = '[GNOMES]SET_ITEM_DIALOG';
 export const SET_ITEMS = '[GNOMES]SET_ITEMS';
 export const WAITING_LIST = '[GNOMES]WAITING_LIST';
 export const SET_LIST = '[GNOMES]SET_LIST';
-export const SET_FILTER = '[GNOMES]SET_FILTER';
-
-const generateDemoData = () => {
-    const list = [];
-    for (var i = 0; i < 10000; i++) {
-        var item = {
-            "id": i,
-            "name": "Tobus Quickwhistle",
-            "thumbnail": "http://www.publicdomainpictures.net/pictures/10000/nahled/thinking-monkey-11282237747K8xB.jpg",
-            "age": 306,
-            "weight": 39.065952,
-            "height": 107.75835,
-            "hair_color": "Pink",
-            "professions": [
-                "Metalworker",
-                "Woodcarver",
-                "Stonecarver",
-                " Tinker",
-                "Tailor",
-                "Potter"
-            ],
-            "friends": [
-                "Cogwitz Chillwidget",
-                "Tinadette Chillbuster"
-            ]
-        };
-        list.push(item);
-    }
-    return list;
-}
+export const SET_SEARCH = '[GNOMES]SET_SEARCH';
+export const SHOW_FILTERS = '[GNOMES]SHOW_FILTERS';
+export const HIDE_FILTERS = '[GNOMES]HIDE_FILTERS';
+export const SAVE_FILTERS = '[GNOMES]SAVE_FILTERS';
+export const CLEAR_FILTERS = '[GNOMES]CLEAR_FILTERS';
 
 const openDialog = () => {
     return {
@@ -74,53 +51,112 @@ const setItems = (items) => {
     }
 }
 
-const setFilter = (filter) => {
+const setSearch = (search) => {
     return {
-        type: SET_FILTER,
-        filter: filter
+        type: SET_SEARCH,
+        search: search
     }
+}
+
+const findGnome = (items, gnome) => {
+    return items.find((item) => item.name === gnome);
+}
+
+const applyFilterSearch = (items, searchText) => {
+    if (!searchText || searchText.length < 3)
+        return items;
+    return items.filter(item => {
+        return item.name.includes(searchText);
+    });
+}
+
+const applyExtraFilters = (items, extraFilters) => {
+    const {age, height, weight } = extraFilters;
+    return items.filter(item => {
+        return (!age.enabled || (age.enabled && item.age >= age.from && item.age <= age.to))
+            && (!height.enabled || (height.enabled && item.height >= height.from && item.height <= height.to))
+            && (!weight.enabled || (weight.enabled && item.weight >= weight.from && item.weight <= weight.to));
+    });
 }
 
 const applyFilters = () => {
     return (dispatch, getState) => {
         const { items, filter } = getState().gnomeState;
-        const { search, age, height, weight} = filter;
+        const { search, extraFilters } = filter;
 
         let list = items;
+        list = applyFilterSearch(list, search);
+        list = applyExtraFilters(list, extraFilters);
         dispatch(setList(list));
+    }
+}
+
+export const findAndShowGnome = (name) => {
+    return (dispatch, getState) => {
+        Promise.all([
+            dispatch(openDialog())
+        ]).then(() => dispatch(showGnome(findGnome(getState().gnomeState.items, name))));
     }
 }
 
 export const showGnome = (gnome) => setItemDialog(gnome);
 
-export const findAndShowGnome = (index) => {
-    return (dispatch, getState) => {
-        Promise.all([
-            dispatch(openDialog())
-        ]).then(() => {
-            dispatch(setItemDialog(getState().items[index]));
-        })
-    }
-}
-
 export const hideGnome = () => closeDialog();
 
 export const getGnomes = () => {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         Promise.all([
             dispatch(waitingList())
         ]).then(() => {
-            const gnomes = generateDemoData();
-            dispatch(setItems(gnomes));
-        }).then(() => dispatch(applyFilters()))
+            const url = 'https://raw.githubusercontent.com/rrafols/mobile_test/master/data.json';
+            axios.get(url)
+                .then(response => response.data)
+                .then((data) => dispatch(setItems(data.Brastlewark)))
+                .then(() => dispatch(applyFilters()));
+        });
     }
 }
 
-export const filterGnomes = (filter) => {
+export const searchGnomes = (search) => {
     return (dispatch, getState) => {
         Promise.all([
-            dispatch(setFilter(filter))
-        ]).then(() => dispatch(applyFilters()))
+            dispatch(setSearch(search))
+        ]).then(() => dispatch(waitingList()))
+        .then(() => dispatch(applyFilters()));
     }
 }
 
+export const showExtraFilters = () => {
+    return {
+        type: SHOW_FILTERS
+    };
+}
+
+export const hideExtraFilters = () => {
+    return {
+        type: HIDE_FILTERS
+    };
+}
+
+export const saveExtraFilters = (extraFilters) => {
+    return (dispatch, getState) => {
+        Promise.all([
+            dispatch({
+                type: SAVE_FILTERS,
+                extraFilters: extraFilters
+            })
+        ]).then(() => dispatch(waitingList()))
+        .then(() => dispatch(applyFilters()));
+    };
+}
+
+export const clearExtraFilters = () => {
+    return (dispatch, getState) => {
+        Promise.all([
+            dispatch({
+                type: CLEAR_FILTERS,
+            })
+        ]).then(() => dispatch(waitingList()))
+        .then(() => dispatch(applyFilters()));
+    };
+}

@@ -1,19 +1,33 @@
+import * as actions from '../actions/gnome';
+
 const INITIAL_STATE = {
     items: [],
     init: true,
     filter: {
-        search: null,
-        age: {
-            from: null,
-            to: null
-        },
-        weight: {
-            from: null,
-            to: null
-        },
-        height: {
-            from: null,
-            to: null
+        search: '',
+        showExtraFilters: false,
+        extraFilters: {
+            age: {
+                enabled: false,
+                from: 0,
+                to: 500,
+                min: 0,
+                max: 500
+            },
+            weight: {
+                enabled: false,
+                from: 0,
+                to: 50,
+                min: 0,
+                max: 50
+            },
+            height: {
+                enabled: false,
+                from: 0,
+                to: 150,
+                min: 0,
+                max: 150
+            }
         }
     },
     list: {
@@ -77,33 +91,80 @@ const applySetList = (state, action) => ({
     },
 });
 
-const applySetFilter = (state, action) => ({
+const applySetSearch = (state, action) => ({
     ...state,
-    filter: state.filter,
+    filter: {
+        ...state.filter,
+        search: action.search
+    }
+});
+
+const applyShowExtraFilters = (state, action) => ({
+    ...state,
+    filter: {
+        ...state.filter,
+        showExtraFilters: true
+    }
+});
+
+const applyHideExtraFilters = (state, action) => ({
+    ...state,
+    filter: {
+        ...state.filter,
+        showExtraFilters: false
+    }
+});
+
+const applySaveExtraFilters = (state, action) => ({
+    ...state,
+    filter: {
+        ...state.filter,
+        extraFilters: action.extraFilters
+    }
+});
+
+const applyClearExtraFilters = (state, action) => ({
+    ...state,
+    filter: {
+        ...state.filter,
+        extraFilters: INITIAL_STATE.filter.extraFilters
+    }
 });
 
 function gnomeReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case '[GNOMES]SET_ITEMS': {
+        case actions.SET_ITEMS: {
             return applySetItems(state, action);
         }
-        case '[GNOMES]OPEN_DIALOG': {
+        case actions.OPEN_DIALOG: {
             return applyOpenDialog(state, action);
         }
-        case '[GNOMES]SET_ITEM_DIALOG': {
+        case actions.SET_ITEM_DIALOG: {
             return applySetItemDialog(state, action);
         }
-        case '[GNOMES]CLOSE_DIALOG': {
+        case actions.CLOSE_DIALOG: {
             return applyCloseDialog(state, action);
         }
-        case '[GNOMES]WAITING_LIST': {
+        case actions.WAITING_LIST: {
             return applyWaitingList(state, action);
         }
-        case '[GNOMES]SET_LIST': {
+        case actions.SET_LIST: {
             return applySetList(state, action);
         }
-        case '[GNOMES]SET_FILTER': {
-            return applySetFilter(state, action);
+        case actions.SET_SEARCH: {
+            return applySetSearch(state, action);
+        }
+        case actions.SHOW_FILTERS: {
+            return applyShowExtraFilters(state, action);
+        }
+        case actions.HIDE_FILTERS: {
+            return applyHideExtraFilters(state, action);
+        }
+        case actions.SAVE_FILTERS: {
+            return applySaveExtraFilters(state, action);
+        }
+        case actions.CLEAR_FILTERS: {
+            return applyClearExtraFilters(state, action);
         }
         default:
             return state;

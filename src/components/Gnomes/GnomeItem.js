@@ -6,9 +6,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 
-const GnomeItem = ({ index, style, items, onShowGnome }) => {
+const getDetail = ({ age, height, weight }) => {
+    return `Age: ${age} - Weight: ${weight} - Height: ${height}`
+}
 
-    const gnome = index < items.length ? items[index] : null;
+const GnomeItem = ({ index, style, data, onShowGnome }) => {
+
+    const gnome = index < data.length ? data[index] : null;
     if (gnome == null)
         return null;
 
@@ -28,14 +32,14 @@ const GnomeItem = ({ index, style, items, onShowGnome }) => {
             </ListItemAvatar>
             <ListItemText 
                 primary={gnome.name}
-                secondary={gnome.id}
+                secondary={getDetail(gnome)}
             />
         </ListItem>
     );
 }
 
 const mapStateToProps = ({ gnomeState }) => ({
-    items: gnomeState.items
+    data: gnomeState.list.data
 });
 
 const mapDispatchToProps = dispatch => ({

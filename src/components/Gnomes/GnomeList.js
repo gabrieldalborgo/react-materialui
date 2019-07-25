@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import GnomeItem from './GnomeItem';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { WindowScroller, AutoSizer, List } from 'react-virtualized';
 
 const GnomeList = ({ data, loading }) => {
 
     if (loading)
-        return (<div>loading...</div>)
+        return (<LinearProgress />)
 
     return (
         <WindowScroller>

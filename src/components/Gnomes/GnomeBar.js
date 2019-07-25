@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { searchGnomes, showExtraFilters } from '../../actions/gnome';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,6 +11,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import SearchIcon from '@material-ui/icons/Search';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
+import GnomeFiltersDialog from './GnomeFiltersDialog';
 
 const HideOnScroll = (props) => {
     const { children } = props;
@@ -70,13 +72,10 @@ const useStyles = makeStyles(theme => ({
                 width: 200,
             },
         },
-    },
-    filter: {
-
-    },
+    }
 }));
 
-const GnomeBar = (props) => {
+const GnomeBar = ({ search, onSearchGnomes, onShowExtraFilters }) => {
     const classes = useStyles();
 
     return (
@@ -98,25 +97,34 @@ const GnomeBar = (props) => {
                                     input: classes.inputInput,
                                 }}
                                 inputProps={{ 'aria-label': 'Search' }}
+                                value={search}
+                                onChange={(e) => onSearchGnomes(e.target.value)}
                             />
                         </div>
                         <div className={classes.filter}>
-                            <IconButton aria-label="Filter" color="inherit">
+                            <IconButton 
+                                aria-label="Filter"
+                                color="inherit"
+                                onClick={onShowExtraFilters}
+                            >
                                 <FilterListIcon />
                             </IconButton>
                         </div>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
+            <GnomeFiltersDialog />
         </div>
     );
 }
 
 const mapStateToProps = ({ gnomeState }) => ({
-    filter: gnomeState.filter,
+    search: gnomeState.filter.search,
 });
 
 const mapDispatchToProps = dispatch => ({
+    onSearchGnomes: (search) => dispatch(searchGnomes(search)),
+    onShowExtraFilters: () => dispatch(showExtraFilters()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GnomeBar);
