@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import gnomeReducer from './gnome';
+import peopleReducer from './people';
 
 const rootReducer = combineReducers({
-  gnomeState: gnomeReducer,
+  peopleState: peopleReducer,
 });
 
 export default rootReducer;

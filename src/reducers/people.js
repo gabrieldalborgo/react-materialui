@@ -1,8 +1,8 @@
-import * as actions from '../actions/gnome';
+import * as actions from '../actions/people';
 
 const INITIAL_STATE = {
     items: [],
-    towns: [ "Brastlewark", "Otra", "Cualquiera"],
+    towns: [],
     selectedTown: "",
     itemsByTown: [],
     showTownSelector: false,
@@ -155,7 +155,7 @@ const applyClearExtraFilters = (state, action) => ({
     }
 });
 
-function gnomeReducer(state = INITIAL_STATE, action) {
+function peopleReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
         case actions.SET_ITEMS: {
             return applySetItems(state, action);
@@ -204,4 +204,4 @@ function gnomeReducer(state = INITIAL_STATE, action) {
     }
 }
 
-export default gnomeReducer;
+export default peopleReducer;

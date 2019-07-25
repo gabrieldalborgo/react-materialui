@@ -1,20 +1,20 @@
 import config from '../config';
 import axios from 'axios';
 
-export const OPEN_DIALOG = '[GNOMES]OPEN_DIALOG';
-export const CLOSE_DIALOG = '[GNOMES]CLOSE_DIALOG';
-export const SET_ITEM_DIALOG = '[GNOMES]SET_ITEM_DIALOG';
-export const SET_ITEMS = '[GNOMES]SET_ITEMS';
-export const SELECT_TOWN = '[GNOMES]SELECT_TOWN';
-export const WAITING_LIST = '[GNOMES]WAITING_LIST';
-export const SET_LIST = '[GNOMES]SET_LIST';
-export const SET_SEARCH = '[GNOMES]SET_SEARCH';
-export const SHOW_FILTERS = '[GNOMES]SHOW_FILTERS';
-export const HIDE_FILTERS = '[GNOMES]HIDE_FILTERS';
-export const SAVE_FILTERS = '[GNOMES]SAVE_FILTERS';
-export const CLEAR_FILTERS = '[GNOMES]CLEAR_FILTERS';
-export const SHOW_TOWN_SELECTOR = '[GNOMES]SHOW_TOWN_SELECTOR';
-export const HIDE_TOWN_SELECTOR = '[GNOMES]HIDE_TOWN_SELECTOR';
+export const OPEN_DIALOG = '[PEOPLE]OPEN_DIALOG';
+export const CLOSE_DIALOG = '[PEOPLE]CLOSE_DIALOG';
+export const SET_ITEM_DIALOG = '[PEOPLE]SET_ITEM_DIALOG';
+export const SET_ITEMS = '[PEOPLE]SET_ITEMS';
+export const SELECT_TOWN = '[PEOPLE]SELECT_TOWN';
+export const WAITING_LIST = '[PEOPLE]WAITING_LIST';
+export const SET_LIST = '[PEOPLE]SET_LIST';
+export const SET_SEARCH = '[PEOPLE]SET_SEARCH';
+export const SHOW_FILTERS = '[PEOPLE]SHOW_FILTERS';
+export const HIDE_FILTERS = '[PEOPLE]HIDE_FILTERS';
+export const SAVE_FILTERS = '[PEOPLE]SAVE_FILTERS';
+export const CLEAR_FILTERS = '[PEOPLE]CLEAR_FILTERS';
+export const SHOW_TOWN_SELECTOR = '[PEOPLE]SHOW_TOWN_SELECTOR';
+export const HIDE_TOWN_SELECTOR = '[PEOPLE]HIDE_TOWN_SELECTOR';
 
 const openDialog = () => {
     return {
@@ -75,16 +75,15 @@ const findByTown = (name, items) => {
     return items.find((item) => item.name === name);
 }
 
-const findGnome = (name, itemsByTown, items) => {
+const findPerson = (name, itemsByTown, items) => {
     let item = findByTown(name, itemsByTown);
-    if (item)
-        return;
-
-    let values = Object.values(items);
-    for(let i = 0; i < values.length; i++) {
-        item = findByTown(name, values[i]);
-        if (item)
-            break;
+    if (!item) {
+        let values = Object.values(items);
+        for (let i = 0; i < values.length; i++) {
+            item = findByTown(name, values[i]);
+            if (item)
+                break;
+        }
     }
     return item;
 }
@@ -98,7 +97,7 @@ const applyFilterSearch = (items, searchText) => {
 }
 
 const applyExtraFilters = (items, extraFilters) => {
-    const {age, height, weight } = extraFilters;
+    const { age, height, weight } = extraFilters;
     return items.filter(item => {
         return (!age.enabled || (age.enabled && item.age >= age.from && item.age <= age.to))
             && (!height.enabled || (height.enabled && item.height >= height.from && item.height <= height.to))
@@ -108,7 +107,7 @@ const applyExtraFilters = (items, extraFilters) => {
 
 const applyFilters = () => {
     return (dispatch, getState) => {
-        const { itemsByTown, filter } = getState().gnomeState;
+        const { itemsByTown, filter } = getState().peopleState;
         const { search, extraFilters } = filter;
 
         let list = itemsByTown;
@@ -118,20 +117,20 @@ const applyFilters = () => {
     }
 }
 
-export const findAndShowGnome = (name) => {
+export const findAndShowPerson = (name) => {
     return (dispatch, getState) => {
-        const { items, itemsByTown} = { ...getState().gnomeState };
+        const { items, itemsByTown } = { ...getState().peopleState };
         Promise.all([
             dispatch(openDialog())
-        ]).then(() => dispatch(showGnome(findGnome(name, itemsByTown, items))));
+        ]).then(() => dispatch(showPerson(findPerson(name, itemsByTown, items))));
     }
 }
 
-export const showGnome = (gnome) => setItemDialog(gnome);
+export const showPerson = (person) => setItemDialog(person);
 
-export const hideGnome = () => closeDialog();
+export const hidePerson = () => closeDialog();
 
-export const getGnomes = () => {
+export const getPeople = () => {
     return (dispatch) => {
         Promise.all([
             dispatch(waitingList())
@@ -144,12 +143,12 @@ export const getGnomes = () => {
     }
 }
 
-export const searchGnomes = (search) => {
+export const searchPeople = (search) => {
     return (dispatch, getState) => {
         Promise.all([
             dispatch(setSearch(search))
         ]).then(() => dispatch(waitingList()))
-        .then(() => dispatch(applyFilters()));
+            .then(() => dispatch(applyFilters()));
     }
 }
 
@@ -173,7 +172,7 @@ export const saveExtraFilters = (extraFilters) => {
                 extraFilters: extraFilters
             })
         ]).then(() => dispatch(waitingList()))
-        .then(() => dispatch(applyFilters()));
+            .then(() => dispatch(applyFilters()));
     };
 }
 
@@ -184,14 +183,14 @@ export const clearExtraFilters = () => {
                 type: CLEAR_FILTERS,
             })
         ]).then(() => dispatch(waitingList()))
-        .then(() => dispatch(applyFilters()));
+            .then(() => dispatch(applyFilters()));
     };
 }
 
 export const selectTown = (town) => {
     return (dispatch, getState) => {
 
-        const { items } = getState().gnomeState;
+        const { items } = getState().peopleState;
 
         Promise.all([
             dispatch({
@@ -200,7 +199,7 @@ export const selectTown = (town) => {
                 itemsByTown: items[town] ? items[town] : []
             })
         ]).then(() => dispatch(waitingList()))
-        .then(() => dispatch(applyFilters()));
+            .then(() => dispatch(applyFilters()));
     };
 }
 

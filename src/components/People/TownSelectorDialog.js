@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withCommons } from '../Commons';
-import { selectTown, hideTownSelector } from '../../actions/gnome';
+import { selectTown, hideTownSelector } from '../../actions/people';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import List from '@material-ui/core/List';
@@ -33,9 +33,9 @@ const TownSelectorDialog = ({ fullScreen, showTownSelector, towns, onSelectTown,
     );
 }
 
-const mapStateToProps = ({ gnomeState }) => ({
-    towns: gnomeState.towns,
-    showTownSelector: gnomeState.showTownSelector
+const mapStateToProps = ({ peopleState }) => ({
+    towns: peopleState.towns,
+    showTownSelector: peopleState.showTownSelector
 });
 
 const mapDispatchToProps = dispatch => ({

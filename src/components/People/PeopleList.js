@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import GnomeItem from './GnomeItem';
+import PeopleItem from './PeopleItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { WindowScroller, AutoSizer, List } from 'react-virtualized';
 import Typography from '@material-ui/core/Typography';
@@ -14,7 +14,7 @@ const NoRecords = () => (
     </Typography>
 );
 
-const GnomeList = ({ data, loading }) => {
+const PeopleList = ({ data, loading }) => {
 
     if (loading)
         return (<LinearProgress />)
@@ -30,7 +30,7 @@ const GnomeList = ({ data, loading }) => {
                             height={height}
                             rowCount={data.length}
                             rowHeight={80}
-                            rowRenderer={(e) => <GnomeItem {...e} />}
+                            rowRenderer={(e) => <PeopleItem {...e} />}
                             scrollTop={scrollTop}
                             width={width}
                         />
@@ -41,9 +41,9 @@ const GnomeList = ({ data, loading }) => {
     );
 }
 
-const mapStateToProps = ({ gnomeState }) => ({
-    data: gnomeState.list.data,
-    loading: gnomeState.list.loading,
+const mapStateToProps = ({ peopleState }) => ({
+    data: peopleState.list.data,
+    loading: peopleState.list.loading,
 });
 
-export default connect(mapStateToProps)(GnomeList);
+export default connect(mapStateToProps)(PeopleList);

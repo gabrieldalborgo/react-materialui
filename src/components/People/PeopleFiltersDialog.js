@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withCommons } from '../Commons';
 import { connect } from 'react-redux';
-import { hideExtraFilters, saveExtraFilters, clearExtraFilters } from '../../actions/gnome';
+import { hideExtraFilters, saveExtraFilters, clearExtraFilters } from '../../actions/people';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const GnomeFiltersDialogBase = withCommons(({ fullScreen, showExtraFilters, extraFilters, onHideExtraFilters, onClearExtraFilters, onChangeElement }) => {
+const PeopleFiltersDialogBase = withCommons(({ fullScreen, showExtraFilters, extraFilters, onHideExtraFilters, onClearExtraFilters, onChangeElement }) => {
     const classes = useStyles();
     const { age, weight, height } = extraFilters;
 
@@ -115,7 +115,7 @@ const GnomeFiltersDialogBase = withCommons(({ fullScreen, showExtraFilters, extr
     );
 });
 
-class GnomeFiltersDialog extends Component {
+class PeopleFiltersDialog extends Component {
 
     constructor(props) {
         super(props)
@@ -143,16 +143,16 @@ class GnomeFiltersDialog extends Component {
         if (!this.props.showExtraFilters)
             return null;
 
-        return <GnomeFiltersDialogBase
+        return <PeopleFiltersDialogBase
                     {...this.props}
                     onChangeElement={this.handleChangeElement}
                 />
     }
 }
 
-const mapStateToProps = ({ gnomeState }) => ({
-    showExtraFilters: gnomeState.filter.showExtraFilters,
-    extraFilters: gnomeState.filter.extraFilters,
+const mapStateToProps = ({ peopleState }) => ({
+    showExtraFilters: peopleState.filter.showExtraFilters,
+    extraFilters: peopleState.filter.extraFilters,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -161,4 +161,4 @@ const mapDispatchToProps = dispatch => ({
     onClearExtraFilters: () => dispatch(clearExtraFilters()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(GnomeFiltersDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(PeopleFiltersDialog);

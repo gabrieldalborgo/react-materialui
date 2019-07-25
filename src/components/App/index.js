@@ -1,5 +1,5 @@
 import React from 'react';
-import Gnomes from '../Gnomes';
+import People from '../People';
 import { Provider } from 'react-redux';
 import { CommonsContext } from '../Commons';
 
@@ -8,7 +8,7 @@ import store from '../../store';
 const App = () => (
     <Provider store={store}>
         <CommonsContext.Provider>
-            <Gnomes />
+            <People />
         </CommonsContext.Provider>
     </Provider>
 );

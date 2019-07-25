@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withCommons } from '../Commons';
-import { hideGnome, findAndShowGnome } from '../../actions/gnome';
+import { hidePerson, findAndShowPerson } from '../../actions/people';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Dialog from '@material-ui/core/Dialog';
@@ -46,11 +46,11 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Header = ({ classes, title, onHideGnome }) => {
+const Header = ({ classes, title, onHidePerson }) => {
     return (
         <AppBar position="static">
             <Toolbar>
-                <IconButton edge="start" color="inherit" onClick={onHideGnome} aria-label="Close">
+                <IconButton edge="start" color="inherit" onClick={onHidePerson} aria-label="Close">
                     <CloseIcon />
                 </IconButton>
                 <Typography variant="h6" className={classes.title}>
@@ -61,7 +61,7 @@ const Header = ({ classes, title, onHideGnome }) => {
     );
 }
 
-const Content = ({ classes, loading, item, onHideGnome, onFindGnome }) => {
+const Content = ({ classes, loading, item, onFindPerson }) => {
     if (loading)
         return (
             <LinearProgress
@@ -72,12 +72,12 @@ const Content = ({ classes, loading, item, onHideGnome, onFindGnome }) => {
         <Detail
             classes={classes}
             item={item}
-            onFindGnome={onFindGnome}
+            onFindPerson={onFindPerson}
         />
     );
 }
 
-const Detail = ({ classes, item, onFindGnome }) => {
+const Detail = ({ classes, item, onFindPerson }) => {
     if (!item)
         return (
             <Paper className={classes.paper}>
@@ -142,12 +142,12 @@ const Detail = ({ classes, item, onFindGnome }) => {
                                     className={classes.chip}
                                     label={friend}
                                     clickable
-                                    onClick={() => onFindGnome(friend)}
+                                    onClick={() => onFindPerson(friend)}
                                     color="primary"
                                     variant="outlined"
                                     size="small"
                                     deleteIcon={<LaunchIcon />}
-                                    onDelete={() => onFindGnome(friend)}
+                                    onDelete={() => onFindPerson(friend)}
                                 />
                             )
                         }
@@ -181,7 +181,7 @@ const Detail = ({ classes, item, onFindGnome }) => {
     );
 }
 
-const GnomeDialogBase = withCommons(({ fullScreen, open, loading, item, onHideGnome, onFindGnome }) => {
+const PeopleDialogBase = withCommons(({ fullScreen, open, loading, item, onHidePerson, onFindPerson }) => {
 
     const classes = useStyles();
 
@@ -190,41 +190,41 @@ const GnomeDialogBase = withCommons(({ fullScreen, open, loading, item, onHideGn
             fullWidth
             fullScreen={fullScreen}
             open={open}
-            onClose={onHideGnome}
+            onClose={onHidePerson}
         >
             <Header
                 classes={classes}
-                title={item ? item.name : "Gnome"}
-                onHideGnome={onHideGnome}
+                title={item ? item.name : "Person"}
+                onHidePerson={onHidePerson}
             />
             <Content
                 classes={classes}
                 loading={loading}
                 item={item}
-                onHideGnome={onHideGnome}
-                onFindGnome={onFindGnome}
+                onHidePerson={onHidePerson}
+                onFindPerson={onFindPerson}
             />
         </Dialog>
     );
 });
 
-const GnomeDialog = (props) => {
+const PeopleDialog = (props) => {
 
     if (!props.open)
         return null;
 
-    return <GnomeDialogBase {...props} />
+    return <PeopleDialogBase {...props} />
 }
 
-const mapStateToProps = ({ gnomeState }) => ({
-    open: gnomeState.dialog.open,
-    loading: gnomeState.dialog.loading,
-    item: gnomeState.dialog.item,
+const mapStateToProps = ({ peopleState }) => ({
+    open: peopleState.dialog.open,
+    loading: peopleState.dialog.loading,
+    item: peopleState.dialog.item,
 });
 
 const mapDispatchToProps = dispatch => ({
-    onHideGnome: () => dispatch(hideGnome()),
-    onFindGnome: (name) => dispatch(findAndShowGnome(name))
+    onHidePerson: () => dispatch(hidePerson()),
+    onFindPerson: (name) => dispatch(findAndShowPerson(name))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(GnomeDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(PeopleDialog);

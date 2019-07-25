@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { searchGnomes, showExtraFilters, showTownSelector } from '../../actions/gnome';
+import { searchPeople, showExtraFilters, showTownSelector } from '../../actions/people';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,7 +13,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
-import GnomeFiltersDialog from './GnomeFiltersDialog';
+import PeopleFiltersDialog from './PeopleFiltersDialog';
 
 const HideOnScroll = (props) => {
     const { children } = props;
@@ -95,7 +95,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const GnomeBar = ({ selectedTown, search, onSearchGnomes, onShowExtraFilters, onShowTownSelector }) => {
+const PeopleBar = ({ selectedTown, search, onSearchPeople, onShowExtraFilters, onShowTownSelector }) => {
     const classes = useStyles();
 
     return (
@@ -114,7 +114,7 @@ const GnomeBar = ({ selectedTown, search, onSearchGnomes, onShowExtraFilters, on
                             </Button>
                         </div>
                         <Typography className={classes.title} variant="h6" noWrap>
-                            Gnomes
+                            People
                         </Typography>
                         
                         <div className={classes.search}>
@@ -129,7 +129,7 @@ const GnomeBar = ({ selectedTown, search, onSearchGnomes, onShowExtraFilters, on
                                 }}
                                 inputProps={{ 'aria-label': 'Search' }}
                                 value={search}
-                                onChange={(e) => onSearchGnomes(e.target.value)}
+                                onChange={(e) => onSearchPeople(e.target.value)}
                             />
                         </div>
                         <div className={classes.filter}>
@@ -144,20 +144,20 @@ const GnomeBar = ({ selectedTown, search, onSearchGnomes, onShowExtraFilters, on
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
-            <GnomeFiltersDialog />
+            <PeopleFiltersDialog />
         </div>
     );
 }
 
-const mapStateToProps = ({ gnomeState }) => ({
-    search: gnomeState.filter.search,
-    selectedTown: gnomeState.selectedTown
+const mapStateToProps = ({ peopleState }) => ({
+    search: peopleState.filter.search,
+    selectedTown: peopleState.selectedTown
 });
 
 const mapDispatchToProps = dispatch => ({
-    onSearchGnomes: (search) => dispatch(searchGnomes(search)),
+    onSearchPeople: (search) => dispatch(searchPeople(search)),
     onShowExtraFilters: () => dispatch(showExtraFilters()),
     onShowTownSelector: () => dispatch(showTownSelector()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(GnomeBar);
+export default connect(mapStateToProps, mapDispatchToProps)(PeopleBar);
