@@ -3,12 +3,23 @@ import { connect } from 'react-redux';
 import GnomeItem from './GnomeItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { WindowScroller, AutoSizer, List } from 'react-virtualized';
+import Typography from '@material-ui/core/Typography';
+
+const NoRecords = () => (
+    <Typography 
+        variant="h6"
+        style={{ textAlign: 'center', marginTop: 10}}
+    >
+        No records
+    </Typography>
+);
 
 const GnomeList = ({ data, loading }) => {
 
     if (loading)
         return (<LinearProgress />)
-
+    if (data.length === 0)
+        return (<NoRecords/>)
     return (
         <WindowScroller>
             {({ height, scrollTop }) => (

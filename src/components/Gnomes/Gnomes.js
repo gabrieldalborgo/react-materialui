@@ -4,6 +4,7 @@ import { getGnomes } from '../../actions/gnome';
 import GnomeBar from './GnomeBar';
 import GnomeList from './GnomeList';
 import GnomeDialog from './GnomeDialog';
+import TownSelectorDialog from './TownSelectorDialog';
 
 class Gnomes extends Component {
 
@@ -20,6 +21,7 @@ class Gnomes extends Component {
                     <GnomeList />
                 </div>
                 <GnomeDialog />
+                <TownSelectorDialog />
             </>
         );
     }

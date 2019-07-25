@@ -2,6 +2,10 @@ import * as actions from '../actions/gnome';
 
 const INITIAL_STATE = {
     items: [],
+    towns: [ "Brastlewark", "Otra", "Cualquiera"],
+    selectedTown: "",
+    itemsByTown: [],
+    showTownSelector: false,
     init: true,
     filter: {
         search: '',
@@ -44,8 +48,28 @@ const INITIAL_STATE = {
 const applySetItems = (state, action) => ({
     ...state,
     items: action.items,
+    towns: action.towns,
+    selectedTown: action.selectedTown,
+    itemsByTown: action.itemsByTown,
     init: false
 });
+
+const applySelectTown = (state, action) => ({
+    ...state,
+    selectedTown: action.selectedTown,
+    itemsByTown: action.itemsByTown,
+    showTownSelector: false
+})
+
+const applyShowTownSelector = (state, action) => ({
+    ...state,
+    showTownSelector: true
+})
+
+const applyHideTownSelector = (state, action) => ({
+    ...state,
+    showTownSelector: false
+})
 
 const applyOpenDialog = (state, action) => ({
     ...state,
@@ -136,6 +160,9 @@ function gnomeReducer(state = INITIAL_STATE, action) {
         case actions.SET_ITEMS: {
             return applySetItems(state, action);
         }
+        case actions.SELECT_TOWN: {
+            return applySelectTown(state, action);
+        }
         case actions.OPEN_DIALOG: {
             return applyOpenDialog(state, action);
         }
@@ -165,6 +192,12 @@ function gnomeReducer(state = INITIAL_STATE, action) {
         }
         case actions.CLEAR_FILTERS: {
             return applyClearExtraFilters(state, action);
+        }
+        case actions.SHOW_TOWN_SELECTOR: {
+            return applyShowTownSelector(state, action);
+        }
+        case actions.HIDE_TOWN_SELECTOR: {
+            return applyHideTownSelector(state, action);
         }
         default:
             return state;

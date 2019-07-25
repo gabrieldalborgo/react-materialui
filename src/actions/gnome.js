@@ -5,6 +5,7 @@ export const OPEN_DIALOG = '[GNOMES]OPEN_DIALOG';
 export const CLOSE_DIALOG = '[GNOMES]CLOSE_DIALOG';
 export const SET_ITEM_DIALOG = '[GNOMES]SET_ITEM_DIALOG';
 export const SET_ITEMS = '[GNOMES]SET_ITEMS';
+export const SELECT_TOWN = '[GNOMES]SELECT_TOWN';
 export const WAITING_LIST = '[GNOMES]WAITING_LIST';
 export const SET_LIST = '[GNOMES]SET_LIST';
 export const SET_SEARCH = '[GNOMES]SET_SEARCH';
@@ -12,6 +13,8 @@ export const SHOW_FILTERS = '[GNOMES]SHOW_FILTERS';
 export const HIDE_FILTERS = '[GNOMES]HIDE_FILTERS';
 export const SAVE_FILTERS = '[GNOMES]SAVE_FILTERS';
 export const CLEAR_FILTERS = '[GNOMES]CLEAR_FILTERS';
+export const SHOW_TOWN_SELECTOR = '[GNOMES]SHOW_TOWN_SELECTOR';
+export const HIDE_TOWN_SELECTOR = '[GNOMES]HIDE_TOWN_SELECTOR';
 
 const openDialog = () => {
     return {
@@ -46,9 +49,18 @@ const setList = (data) => {
 }
 
 const setItems = (items) => {
+
+    const towns = Object.keys(items);
+    const { selectedTown, itemsByTown } = towns.length > 0
+        ? { selectedTown: towns[0], itemsByTown: items[towns[0]] }
+        : { selectedTown: "", itemsByTown: [] }
+
     return {
         type: SET_ITEMS,
-        items: items
+        items: items,
+        towns: towns,
+        selectedTown: selectedTown,
+        itemsByTown: itemsByTown
     }
 }
 
@@ -59,8 +71,22 @@ const setSearch = (search) => {
     }
 }
 
-const findGnome = (items, gnome) => {
-    return items.find((item) => item.name === gnome);
+const findByTown = (name, items) => {
+    return items.find((item) => item.name === name);
+}
+
+const findGnome = (name, itemsByTown, items) => {
+    let item = findByTown(name, itemsByTown);
+    if (item)
+        return;
+
+    let values = Object.values(items);
+    for(let i = 0; i < values.length; i++) {
+        item = findByTown(name, values[i]);
+        if (item)
+            break;
+    }
+    return item;
 }
 
 const applyFilterSearch = (items, searchText) => {
@@ -82,10 +108,10 @@ const applyExtraFilters = (items, extraFilters) => {
 
 const applyFilters = () => {
     return (dispatch, getState) => {
-        const { items, filter } = getState().gnomeState;
+        const { itemsByTown, filter } = getState().gnomeState;
         const { search, extraFilters } = filter;
 
-        let list = items;
+        let list = itemsByTown;
         list = applyFilterSearch(list, search);
         list = applyExtraFilters(list, extraFilters);
         dispatch(setList(list));
@@ -94,9 +120,10 @@ const applyFilters = () => {
 
 export const findAndShowGnome = (name) => {
     return (dispatch, getState) => {
+        const { items, itemsByTown} = { ...getState().gnomeState };
         Promise.all([
             dispatch(openDialog())
-        ]).then(() => dispatch(showGnome(findGnome(getState().gnomeState.items, name))));
+        ]).then(() => dispatch(showGnome(findGnome(name, itemsByTown, items))));
     }
 }
 
@@ -111,7 +138,7 @@ export const getGnomes = () => {
         ]).then(() => {
             axios.get(config.URL)
                 .then(response => response.data)
-                .then((data) => dispatch(setItems(data.Brastlewark)))
+                .then((data) => dispatch(setItems(data)))
                 .then(() => dispatch(applyFilters()));
         });
     }
@@ -158,5 +185,33 @@ export const clearExtraFilters = () => {
             })
         ]).then(() => dispatch(waitingList()))
         .then(() => dispatch(applyFilters()));
+    };
+}
+
+export const selectTown = (town) => {
+    return (dispatch, getState) => {
+
+        const { items } = getState().gnomeState;
+
+        Promise.all([
+            dispatch({
+                type: SELECT_TOWN,
+                selectedTown: town,
+                itemsByTown: items[town] ? items[town] : []
+            })
+        ]).then(() => dispatch(waitingList()))
+        .then(() => dispatch(applyFilters()));
+    };
+}
+
+export const showTownSelector = () => {
+    return {
+        type: SHOW_TOWN_SELECTOR
+    };
+}
+
+export const hideTownSelector = () => {
+    return {
+        type: HIDE_TOWN_SELECTOR
     };
 }
