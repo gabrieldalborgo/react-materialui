@@ -5,10 +5,7 @@ import { hideGnome, findAndShowGnome } from '../../actions/gnome';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Dialog from '@material-ui/core/Dialog';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import List from '@material-ui/core/List';
+import DialogContent from '@material-ui/core/DialogContent';
 import AppBar from '@material-ui/core/AppBar';
 import Chip from '@material-ui/core/Chip';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,6 +14,8 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
 import LaunchIcon from '@material-ui/icons/Launch';
 
 const useStyles = makeStyles(theme => ({
@@ -26,8 +25,8 @@ const useStyles = makeStyles(theme => ({
     },
     bigAvatar: {
         margin: 10,
-        width: 40,
-        height: 40,
+        width: 160,
+        height: 160,
     },
     chip: {
         margin: theme.spacing(1),
@@ -41,7 +40,10 @@ const useStyles = makeStyles(theme => ({
     paper: {
         padding: theme.spacing(3, 2),
         margin: theme.spacing(2),
-    }
+    },
+    section: {
+        margin: theme.spacing(2),
+    },
 }));
 
 const Header = ({ classes, title, onHideGnome }) => {
@@ -67,7 +69,7 @@ const Content = ({ classes, loading, item, onHideGnome, onFindGnome }) => {
             />
         );
     return (
-        <Detail 
+        <Detail
             classes={classes}
             item={item}
             onFindGnome={onFindGnome}
@@ -87,78 +89,95 @@ const Detail = ({ classes, item, onFindGnome }) => {
                 </Typography>
             </Paper>
         );
+
     return (
-        <List>
-            <ListItemAvatar>
-                <Avatar
-                    alt={item.name}
-                    src={item.thumbnail}
-                    className={classes.bigAvatar}
-                />
-            </ListItemAvatar>
-            <ListItem>
-                <ListItemText
-                    primary="Age"
-                    secondary={item.age}
-                />
-            </ListItem>
-            <ListItem>
-                <ListItemText
-                    primary="Weight"
-                    secondary={item.weight}
-                />
-            </ListItem>
-            <ListItem>
-                <ListItemText
-                    primary="Height"
-                    secondary={item.height}
-                />
-            </ListItem>
-            <ListItem>
-                <ListItemText
-                    primary="Hair color"
-                    secondary={item.hair_color}
-                />
-            </ListItem>
-            <ListItem>
-                <ListItemText
-                    primary="Friends"
-                    secondary={
-                        item.friends.map((friend, index) =>
-                            <Chip
-                                key={index}
-                                className={classes.chip}
-                                label={friend}
-                                clickable
-                                onClick={() => onFindGnome(friend)}
-                                color="primary"
-                                variant="outlined"
-                                size="small"
-                                deleteIcon={<LaunchIcon />}
-                                onDelete={() => onFindGnome(friend)}
-                            />
-                        )
-                    }
-                />
-            </ListItem>
-            <ListItem>
-                <ListItemText
-                    primary="Professions"
-                    secondary={
-                        item.professions.map((profession, index) =>
-                            <Chip
-                                key={index}
-                                className={classes.chip}
-                                label={profession}
-                                color="primary"
-                                variant="outlined"
-                                size="small"
-                            />
-                        )
-                    }
-                />
-            </ListItem>
-        </List>
+        <DialogContent className={classes.content}>
+            <Grid container>
+                <Grid item sm={6} xs={12}>
+                    <Grid container justify="center" alignItems="center">
+                        <Avatar
+                            alt={item.name}
+                            src={item.thumbnail}
+                            className={classes.bigAvatar}
+                        />
+                    </Grid>
+                </Grid> 
+                <Grid item sm={6} xs={12}>
+                    <Grid item>
+                        <div className={classes.section}>
+                            <Typography gutterBottom variant="body1">
+                                Age: {item.age}
+                            </Typography>
+                        </div>
+                    </Grid>
+                    <Grid item>
+                        <Divider variant="middle" />
+                        <div className={classes.section}>
+                            <Typography gutterBottom variant="body1">
+                                Weight: {item.weight}
+                            </Typography>
+                        </div>
+                    </Grid>
+                    <Grid item>
+                        <Divider variant="middle" />
+                        <div className={classes.section}>
+                            <Typography gutterBottom variant="body1">
+                                Height: {item.height}
+                            </Typography>
+                        </div>
+                    </Grid>
+                </Grid>
+               
+                <Grid item xs={12}>
+                    <Divider variant="middle" />
+                    <div className={classes.section}>
+                        <Typography gutterBottom variant="body1">
+                            Friends
+                        </Typography>
+                        <div>
+                        {
+                            item.friends.map((friend, index) =>
+                                <Chip
+                                    key={index}
+                                    className={classes.chip}
+                                    label={friend}
+                                    clickable
+                                    onClick={() => onFindGnome(friend)}
+                                    color="primary"
+                                    variant="outlined"
+                                    size="small"
+                                    deleteIcon={<LaunchIcon />}
+                                    onDelete={() => onFindGnome(friend)}
+                                />
+                            )
+                        }
+                        </div>
+                    </div>
+                </Grid>
+                <Grid item xs={12}>
+                    <Divider variant="middle" />
+                    <div className={classes.section}>
+                        <Typography gutterBottom variant="body1">
+                            Professions
+                        </Typography>
+                        <div>
+                        {
+                            item.professions.map((profession, index) =>
+                                <Chip
+                                    key={index}
+                                    className={classes.chip}
+                                    label={profession}
+                                    color="primary"
+                                    variant="outlined"
+                                    size="small"
+                                />
+                            )
+                        }
+                        </div>
+                    </div>
+                </Grid>
+            </Grid>
+        </DialogContent>
     );
 }
 
