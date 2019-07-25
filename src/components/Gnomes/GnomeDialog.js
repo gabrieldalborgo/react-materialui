@@ -1,7 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { hideGnome } from '../../actions/gnome';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -9,13 +10,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import Slide from '@material-ui/core/Slide';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles(theme => ({
@@ -28,25 +27,12 @@ const useStyles = makeStyles(theme => ({
     },
     bigAvatar: {
         margin: 10,
-        width: 160,
-        height: 160,
+        width: 40,
+        height: 40,
     },
 }));
 
-const GnomeDialog = (props) => {
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-    if (!props.open)
-    return null;
-
-    return fullScreen
-        ? (<GnomeDialogFullScreen {...props} />)
-        : (<GnomeDialogBasic {...props} />)
-}
-
-const GnomeDialogBasic = (props) => {
-    const { open, loading, item, onClose } = props;
+const GnomeDialogBasic = ({ open, loading, item, onHideGnome }) => {
 
     const classes = useStyles();
 
@@ -54,7 +40,7 @@ const GnomeDialogBasic = (props) => {
         <Dialog
             fullWidth
             open={open}
-            onClose={onClose}
+            onClose={onHideGnome}
         >
             {loading && (<div>loading</div>)}
             {!loading && !item && (<div>not found</div>)}
@@ -118,15 +104,15 @@ const GnomeDialogBasic = (props) => {
     );
 }
 
-const GnomeDialogFullScreen = (props) => {
-    const { open, loading, item, onClose } = props;
+const GnomeDialogFullScreen = ({ open, loading, item, onHideGnome }) => {
+
     const classes = useStyles();
 
     return (
         <Dialog
             fullScreen
             open={open}
-            onClose={onClose}
+            onClose={onHideGnome}
         >
             {loading && (<div>loading</div>)}
             {!loading && !item && (<div>not found</div>)}
@@ -134,7 +120,7 @@ const GnomeDialogFullScreen = (props) => {
                 <>
                     <AppBar position="static">
                         <Toolbar>
-                            <IconButton edge="start" color="inherit" onClick={onClose} aria-label="Close">
+                            <IconButton edge="start" color="inherit" onClick={onHideGnome} aria-label="Close">
                                 <CloseIcon />
                             </IconButton>
                             <Typography variant="h6" className={classes.title}>
@@ -193,5 +179,26 @@ const GnomeDialogFullScreen = (props) => {
     );
 }
 
-export default GnomeDialog;
+const GnomeDialog = (props) => {
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+    if (!props.open)
+        return null;
+
+    return fullScreen
+        ? (<GnomeDialogFullScreen {...props} />)
+        : (<GnomeDialogBasic {...props} />)
+}
+
+const mapStateToProps = ({ gnomeState }) => ({
+    open: gnomeState.dialog.open,
+    loading: gnomeState.dialog.loading,
+    item: gnomeState.dialog.item
+});
+
+const mapDispatchToProps = dispatch => ({
+    onHideGnome: () => dispatch(hideGnome())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GnomeDialog);

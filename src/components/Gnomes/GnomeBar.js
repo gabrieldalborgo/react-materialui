@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -75,17 +76,17 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function GnomeBar(props) {
+const GnomeBar = (props) => {
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
-            <HideOnScroll {...props}>
+            <HideOnScroll>
                 <AppBar>
                     <Toolbar>
                         <Typography className={classes.title} variant="h6" noWrap>
                             Gnomes
-                    </Typography>
+                        </Typography>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -110,3 +111,12 @@ export default function GnomeBar(props) {
         </div>
     );
 }
+
+const mapStateToProps = ({ gnomeState }) => ({
+    filter: gnomeState.filter,
+});
+
+const mapDispatchToProps = dispatch => ({
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GnomeBar);

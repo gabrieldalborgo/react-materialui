@@ -1,10 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import GnomeItem from './GnomeItem';
 import { WindowScroller, AutoSizer, List } from 'react-virtualized';
 
-const GnomeList = (props) => {
+const GnomeList = ({ data, loading }) => {
 
-    const { data, getItem, showDetail } = props;
+    if (loading)
+        return (<div>loading...</div>)
 
     return (
         <WindowScroller>
@@ -16,7 +18,7 @@ const GnomeList = (props) => {
                             height={height}
                             rowCount={data.length}
                             rowHeight={80}
-                            rowRenderer={({ index, style }) => GnomeItem({ index, style, getItem, showDetail})}
+                            rowRenderer={(e) => <GnomeItem {...e} />}
                             scrollTop={scrollTop}
                             width={width}
                         />
@@ -27,4 +29,9 @@ const GnomeList = (props) => {
     );
 }
 
-export default GnomeList;
+const mapStateToProps = ({ gnomeState }) => ({
+    data: gnomeState.list.data,
+    loading: gnomeState.list.loading,
+});
+
+export default connect(mapStateToProps)(GnomeList);
