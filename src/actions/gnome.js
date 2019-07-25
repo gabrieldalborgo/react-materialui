@@ -1,3 +1,4 @@
+import config from '../config';
 import axios from 'axios';
 
 export const OPEN_DIALOG = '[GNOMES]OPEN_DIALOG';
@@ -108,8 +109,7 @@ export const getGnomes = () => {
         Promise.all([
             dispatch(waitingList())
         ]).then(() => {
-            const url = 'https://raw.githubusercontent.com/rrafols/mobile_test/master/data.json';
-            axios.get(url)
+            axios.get(config.URL)
                 .then(response => response.data)
                 .then((data) => dispatch(setItems(data.Brastlewark)))
                 .then(() => dispatch(applyFilters()));
