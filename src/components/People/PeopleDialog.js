@@ -11,7 +11,7 @@ import Chip from '@material-ui/core/Chip';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -51,7 +51,7 @@ const Header = ({ classes, title, onHidePerson }) => {
         <AppBar position="static">
             <Toolbar>
                 <IconButton edge="start" color="inherit" onClick={onHidePerson} aria-label="Close">
-                    <CloseIcon />
+                    <ArrowBackIcon />
                 </IconButton>
                 <Typography variant="h6" className={classes.title}>
                     {title}
@@ -114,7 +114,7 @@ const Detail = ({ classes, item, onFindPerson }) => {
                         <Divider variant="middle" />
                         <div className={classes.section}>
                             <Typography gutterBottom variant="body1">
-                                Weight: {item.weight}
+                                Weight: {item.weight.toFixed(2)}
                             </Typography>
                         </div>
                     </Grid>
@@ -122,7 +122,7 @@ const Detail = ({ classes, item, onFindPerson }) => {
                         <Divider variant="middle" />
                         <div className={classes.section}>
                             <Typography gutterBottom variant="body1">
-                                Height: {item.height}
+                                Height: {item.height.toFixed(2)}
                             </Typography>
                         </div>
                     </Grid>

@@ -92,7 +92,7 @@ const applyFilterSearch = (items, searchText) => {
     if (!searchText || searchText.length < 3)
         return items;
     return items.filter(item => {
-        return item.name.includes(searchText);
+        return item.name.toUpperCase().includes(searchText.toUpperCase());
     });
 }
 

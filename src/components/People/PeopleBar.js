@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { searchPeople, showExtraFilters, showTownSelector } from '../../actions/people';
 import AppBar from '@material-ui/core/AppBar';
+import Badge from '@material-ui/core/Badge';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -90,13 +91,23 @@ const useStyles = makeStyles(theme => ({
     townButton: {
         backgroundColor: 'inherit',
         [theme.breakpoints.up('sm')]: {
-            backgroundColor: fade(theme.palette.common.white, 0.15),    
+            backgroundColor: fade(theme.palette.common.white, 0.15),
         },
-    }
+    },
 }));
 
-const PeopleBar = ({ selectedTown, search, onSearchPeople, onShowExtraFilters, onShowTownSelector }) => {
+const PeopleBar = ({ selectedTown, search, extraFilters, onSearchPeople, onShowExtraFilters, onShowTownSelector }) => {
     const classes = useStyles();
+
+
+    const filterListIcon = extraFilters.age.enabled || extraFilters.weight.enabled || extraFilters.height.enabled
+        ? (
+            <Badge color="secondary" variant="dot">
+                <FilterListIcon />
+            </Badge>
+        ) : (
+            <FilterListIcon />
+        );
 
     return (
         <div className={classes.root}>
@@ -109,14 +120,14 @@ const PeopleBar = ({ selectedTown, search, onSearchPeople, onShowExtraFilters, o
                                 onClick={onShowTownSelector}
                                 className={classes.townButton}
                             >
-                                <LanguageIcon className={classes.leftIcon}/>
+                                <LanguageIcon className={classes.leftIcon} />
                                 <div className={classes.townTitle}>{selectedTown}</div>
                             </Button>
                         </div>
                         <Typography className={classes.title} variant="h6" noWrap>
                             People
                         </Typography>
-                        
+
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -138,7 +149,7 @@ const PeopleBar = ({ selectedTown, search, onSearchPeople, onShowExtraFilters, o
                                 color="inherit"
                                 onClick={onShowExtraFilters}
                             >
-                                <FilterListIcon />
+                                {filterListIcon}
                             </IconButton>
                         </div>
                     </Toolbar>
@@ -151,7 +162,8 @@ const PeopleBar = ({ selectedTown, search, onSearchPeople, onShowExtraFilters, o
 
 const mapStateToProps = ({ peopleState }) => ({
     search: peopleState.filter.search,
-    selectedTown: peopleState.selectedTown
+    selectedTown: peopleState.selectedTown,
+    extraFilters: peopleState.filter.extraFilters
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -7,7 +7,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 
 const getDetail = ({ age, height, weight }) => {
-    return `Age: ${age} - Weight: ${weight} - Height: ${height}`
+    return `Age: ${age} - Weight: ${weight.toFixed(2)} - Height: ${height.toFixed(2)}`
 }
 
 const PeopleItem = ({ index, style, data, onShowPerson }) => {
