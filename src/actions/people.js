@@ -138,6 +138,7 @@ export const getPeople = () => {
             axios.get(config.URL)
                 .then(response => response.data)
                 .then((data) => dispatch(setItems(data)))
+                .catch(ex => {})//TODO manage error state
                 .then(() => dispatch(applyFilters()));
         });
     }
